@@ -52,7 +52,7 @@ namespace Employees.Controllers
 
         }
 
-        [HttpPut("soft-delete")]
+        [HttpDelete("soft-delete")]
         public async Task<ActionResult<List<Employee1>>> SoftDelete(int id)
         {
             var emp = await _context.Employees.FindAsync(id);
