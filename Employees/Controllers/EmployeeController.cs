@@ -68,6 +68,22 @@ namespace Employees.Controllers
             }
            
         }
+        [HttpDelete("permission")]
+        public async Task<ActionResult<List<Employee1>>> Permission(int id)
+        {
+            var emp = await _context.Employees.FindAsync(id);
+            if (emp == null)
+            {
+                return BadRequest("No employee of this id.");
+            }
+            else
+            {
+                emp.isPermission = false;
+                await _context.SaveChangesAsync();
+                return Ok(await _context.Employees.Select(x => new { x.Id, x.Name, x.Age, x.Role }).ToListAsync());
+            }
+
+        }
 
 
         [HttpDelete("delete")]
