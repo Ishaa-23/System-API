@@ -21,24 +21,57 @@ namespace Employees.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Employees.Models.Employee1", b =>
+            modelBuilder.Entity("Employees.Models.EmpRole", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("EmpRole_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpRole_Id"));
+
+                    b.Property<int>("Emp_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role_Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmpRole_Id");
+
+                    b.HasIndex("Emp_Id");
+
+                    b.HasIndex("Role_Id");
+
+                    b.ToTable("EmpRoles");
+                });
+
+            modelBuilder.Entity("Employees.Models.Employee1", b =>
+                {
+                    b.Property<int>("Emp_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Emp_Id"));
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastModified")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Permission_Counter")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Salary")
+                        .HasColumnType("real");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -49,9 +82,45 @@ namespace Employees.Migrations
                     b.Property<bool>("isPermission")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.HasKey("Emp_Id");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("Employees.Models.Roles", b =>
+                {
+                    b.Property<int>("Role_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Role_Id"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Role_Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Employees.Models.EmpRole", b =>
+                {
+                    b.HasOne("Employees.Models.Employee1", "Employee1")
+                        .WithMany()
+                        .HasForeignKey("Emp_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Employees.Models.Roles", "Role")
+                        .WithMany()
+                        .HasForeignKey("Role_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee1");
+
+                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }
