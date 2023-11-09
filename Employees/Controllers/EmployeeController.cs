@@ -30,7 +30,7 @@ namespace Employees.Controllers
 
         public static User user = new User();
         public string token;
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public ActionResult<User> Register(UserDto request, string role)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -39,7 +39,7 @@ namespace Employees.Controllers
             user.Role = role;
             return Ok(user);
         }
-        [HttpGet("login")]
+        [HttpGet("Login")]
         public ActionResult<User> Login(string Username,string Password)
         {
             if (user.Username != Username)
@@ -56,7 +56,7 @@ namespace Employees.Controllers
         }
 
        
-        [HttpGet("get-permission-counter")]
+        [HttpGet("Get-permission-counter"), Authorize(Roles = "Supervisor,Manager")]
         public async Task<ActionResult> GetPermissionCounter(string name)
         {
             var emp = _context.Employees.Where(x => x.Name == name).FirstOrDefault();
@@ -70,7 +70,7 @@ namespace Employees.Controllers
             }
         }
 
-        [HttpGet("Display-Info")]
+        [HttpGet("Display-Info"),Authorize(Roles="Supervisor")]
         public async Task<ActionResult<List<Employee1>>> GetEmpInfo(UserRoles role, string name)
         {
             List<Employee1> results = await _context.Employees.ToListAsync();
@@ -130,7 +130,7 @@ namespace Employees.Controllers
         }
 
 
-        [HttpPost("Add-Employees")]
+        [HttpPost("Add-Employees"),Authorize(Roles="Supervisor,Manager")]
         public async Task<ActionResult> AddEmp(Employee1 emp)
         {
             DateTime dateTime = DateTime.Now; // Replace with your DateTime value
@@ -157,7 +157,7 @@ namespace Employees.Controllers
       
 
       
-        [HttpPut("update")]
+        [HttpPut("Update"), Authorize(Roles = "Supervisor,Manager")]
         public async Task<ActionResult<List<Employee1>>> Update(Employee1 newEmp)
         {
             var emp = await _context.Employees.FindAsync(newEmp.Emp_Id);
@@ -217,7 +217,7 @@ namespace Employees.Controllers
       
 
        
-        [HttpPut("permission-grant")]
+        [HttpPut("Permission-grant"), Authorize(Roles = "Supervisor,Manager")]
         public async Task<ActionResult> Grant(int id)
         {
             var emp = await _context.Employees.FindAsync(id);
@@ -238,7 +238,7 @@ namespace Employees.Controllers
         }
       
 
-        [HttpPut("permission-revoke"), Authorize(Roles = "Supervisor,Manager")]
+        [HttpPut("Permission-revoke"), Authorize(Roles = "Supervisor,Manager")]
         public async Task<ActionResult> Revoke(int id)
         {
             var emp = await _context.Employees.FindAsync(id);
@@ -257,7 +257,7 @@ namespace Employees.Controllers
                 return Ok(await _context.Employees.ToListAsync());
             }
         }
-        [HttpDelete("delete")]
+        [HttpDelete("Delete"), Authorize(Roles = "Supervisor,Manager")]
         public async Task<ActionResult> Delete(int id)
         {
             var emp = await _context.Employees.FindAsync(id);
